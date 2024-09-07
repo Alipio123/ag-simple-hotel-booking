@@ -4,6 +4,7 @@ class Hotel_Booking {
 
     public function init() {
         add_action('init', array($this, 'handle_booking_submission'));
+        add_shortcode('hotel_booking_form', array($this, 'display_form')); // Register shortcode for the form
     }
 
     // Create the booking table
@@ -58,21 +59,64 @@ class Hotel_Booking {
         return ob_get_clean();
     }
 
-    // Handle form submission and save booking data
     public function handle_booking_submission() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['room_id'])) {
             global $wpdb;
-            $wpdb->insert(
-                $wpdb->prefix . 'hotel_bookings',
-                array(
-                    'room_id'        => intval($_POST['room_id']),
-                    'checkin_date'   => sanitize_text_field($_POST['checkin_date']),
-                    'checkout_date'  => sanitize_text_field($_POST['checkout_date']),
-                    'customer_name'  => sanitize_text_field($_POST['customer_name']),
-                    'customer_email' => sanitize_email($_POST['customer_email']),
-                )
-            );
-            echo 'Booking successful!';
+
+            $room_id = intval($_POST['room_id']);
+            $checkin_date = sanitize_text_field($_POST['checkin_date']);
+            $checkout_date = sanitize_text_field($_POST['checkout_date']);
+            $customer_name = sanitize_text_field($_POST['customer_name']);
+            $customer_email = sanitize_email($_POST['customer_email']);
+
+            // Check if the room is available
+            if ($this->is_room_available($room_id, $checkin_date, $checkout_date)) {
+                // Insert booking data into the database
+                $wpdb->insert(
+                    $wpdb->prefix . 'hotel_bookings',
+                    array(
+                        'room_id'        => $room_id,
+                        'checkin_date'   => $checkin_date,
+                        'checkout_date'  => $checkout_date,
+                        'customer_name'  => $customer_name,
+                        'customer_email' => $customer_email,
+                    )
+                );
+
+                // Send email to customer
+                $subject = 'Booking Confirmation';
+                $message = "Hello $customer_name,\n\nYour booking from $checkin_date to $checkout_date has been confirmed.";
+                wp_mail($customer_email, $subject, $message);
+
+                // Send email to admin
+                $admin_email = get_option('admin_email');
+                $admin_message = "New booking from $customer_name for Room ID $room_id from $checkin_date to $checkout_date.";
+                wp_mail($admin_email, 'New Booking Notification', $admin_message);
+
+                // Display success message
+                echo 'Booking successful!';
+
+                // Redirect to PayPal for payment (optional)
+                $this->display_paypal_button($room_id, $checkin_date, $checkout_date, $customer_name, $customer_email);
+            } else {
+                echo 'Sorry, this room is not available for the selected dates.';
+            }
         }
+    }
+
+    // Display a PayPal payment button (optional)
+    public function display_paypal_button($room_id, $checkin_date, $checkout_date, $customer_name, $customer_email) {
+        // Change the PayPal details as necessary
+        echo '<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_xclick">
+            <input type="hidden" name="business" value="your-paypal-email@example.com">
+            <input type="hidden" name="item_name" value="Room Booking for Room ID ' . $room_id . '">
+            <input type="hidden" name="amount" value="100.00"> <!-- Adjust this price -->
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="hidden" name="return" value="your-website.com/booking-confirmation-page">
+            <input type="hidden" name="cancel_return" value="your-website.com/booking-cancel-page">
+            <input type="hidden" name="custom" value="' . $room_id . '|' . $checkin_date . '|' . $checkout_date . '|' . $customer_name . '|' . $customer_email . '">
+            <input type="submit" value="Pay with PayPal">
+        </form>';
     }
 }

@@ -71,8 +71,9 @@ class Hotel_Booking {
 
             // Check if the room is available
             if ($this->is_room_available($room_id, $checkin_date, $checkout_date)) {
+
                 // Insert booking data into the database
-                $wpdb->insert(
+                if ( $wpdb->insert(
                     $wpdb->prefix . 'hotel_bookings',
                     array(
                         'room_id'        => $room_id,
@@ -81,7 +82,11 @@ class Hotel_Booking {
                         'customer_name'  => $customer_name,
                         'customer_email' => $customer_email,
                     )
-                );
+                )) {
+                    echo 'Booking successful!';
+                } else {
+                    echo 'Error: ' . $wpdb->last_error;
+                }
 
                 // Send email to customer
                 // $subject = 'Booking Confirmation';
@@ -93,9 +98,7 @@ class Hotel_Booking {
                 // $admin_message = "New booking from $customer_name for Room ID $room_id from $checkin_date to $checkout_date.";
                 // wp_mail($admin_email, 'New Booking Notification', $admin_message);
 
-                // Display success message
-                echo 'Booking successful!';
-
+           
                 // Redirect to PayPal for payment (optional)
                 //$this->display_paypal_button($room_id, $checkin_date, $checkout_date, $customer_name, $customer_email);
             } else {

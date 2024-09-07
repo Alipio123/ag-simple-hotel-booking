@@ -2,7 +2,7 @@
 /*
 Plugin Name: AG Simple Hotel Booking
 Description: A lightweight hotel booking system plugin that allows hotels to manage room bookings, availability, and customer reservations directly from their WordPress site.
-Version: 1.0.5
+Version: 1.0.6
 Author: Alipio Gabriel
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,7 +34,7 @@ $update_checker = PucFactory::buildUpdateChecker(
 $update_checker->setBranch('main'); // Set to 'main' to check for updates directly from the main branch
 
 
-
+add_action('wp_enqueue_scripts', 'ag_simple_hotel_booking_enqueue_scripts');
 function ag_simple_hotel_booking_enqueue_scripts() {
     // Enqueue jQuery UI for the datepicker
     wp_enqueue_script('jquery-ui-datepicker');
@@ -54,4 +54,12 @@ function ag_simple_hotel_booking_enqueue_scripts() {
         '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'
     );
 }
-add_action('wp_enqueue_scripts', 'ag_simple_hotel_booking_enqueue_scripts');
+
+
+require_once plugin_dir_path(__FILE__) . 'includes/class-hotel-admin.php';
+// Initialize the admin interface
+function ag_simple_hotel_admin_init() {
+    $admin = new Hotel_Admin();
+    $admin->init();
+}
+add_action('plugins_loaded', 'ag_simple_hotel_admin_init');

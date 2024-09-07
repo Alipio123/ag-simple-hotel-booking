@@ -2,7 +2,7 @@
 /*
 Plugin Name: AG Simple Hotel Booking
 Description: A lightweight hotel booking system plugin that allows hotels to manage room bookings, availability, and customer reservations directly from their WordPress site.
-Version: 1.0.1
+Version: 1.0.2
 Author: Alipio Gabriel
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -20,7 +20,7 @@ function ag_simple_hotel_booking_init() {
 add_action('plugins_loaded', 'ag_simple_hotel_booking_init');
 
 // Include the Plugin Update Checker library
-require 'path/to/plugin-update-checker/plugin-update-checker.php';
+require_once plugin_dir_path(__FILE__) . 'includes/plugin-update-checker-master/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 // Initialize the update checker

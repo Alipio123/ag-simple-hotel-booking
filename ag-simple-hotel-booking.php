@@ -23,7 +23,7 @@ add_action('plugins_loaded', 'ag_simple_hotel_booking_init');
 require_once plugin_dir_path(__FILE__) . 'includes/plugin-update-checker-master/plugin-update-checker.php';
 
 // Initialize the update checker
-$update_checker = Puc_v4_Factory::buildUpdateChecker(
+$update_checker = Puc_v5_Factory::buildUpdateChecker(
     'https://github.com/Alipio123/ag-simple-hotel-booking/', // GitHub repository URL
     __FILE__, // Full path to the main plugin file
     'ag-simple-hotel-booking' // Plugin slug

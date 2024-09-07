@@ -29,5 +29,7 @@ $update_checker = Puc_v4_Factory::buildUpdateChecker(
     'ag-simple-hotel-booking' // Plugin slug
 );
 
+$update_checker->debugMode = true;
 // Set the branch to check for updates
 $update_checker->setBranch('main'); // Adjust if you're using a different default branch
+

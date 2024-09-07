@@ -20,10 +20,11 @@ function ag_simple_hotel_booking_init() {
 add_action('plugins_loaded', 'ag_simple_hotel_booking_init');
 
 // Include the Plugin Update Checker library
-require_once plugin_dir_path(__FILE__) . 'includes/plugin-update-checker-master/plugin-update-checker.php';
+require 'path/to/plugin-update-checker/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 // Initialize the update checker
-$update_checker = Puc_v5_Factory::buildUpdateChecker(
+$update_checker = PucFactory::buildUpdateChecker(
     'https://github.com/Alipio123/ag-simple-hotel-booking/', // GitHub repository URL
     __FILE__, // Full path to the main plugin file
     'ag-simple-hotel-booking' // Plugin slug

@@ -84,20 +84,20 @@ class Hotel_Booking {
                 );
 
                 // Send email to customer
-                $subject = 'Booking Confirmation';
-                $message = "Hello $customer_name,\n\nYour booking from $checkin_date to $checkout_date has been confirmed.";
-                wp_mail($customer_email, $subject, $message);
+                // $subject = 'Booking Confirmation';
+                // $message = "Hello $customer_name,\n\nYour booking from $checkin_date to $checkout_date has been confirmed.";
+                // wp_mail($customer_email, $subject, $message);
 
-                // Send email to admin
-                $admin_email = get_option('admin_email');
-                $admin_message = "New booking from $customer_name for Room ID $room_id from $checkin_date to $checkout_date.";
-                wp_mail($admin_email, 'New Booking Notification', $admin_message);
+                // // Send email to admin
+                // $admin_email = get_option('admin_email');
+                // $admin_message = "New booking from $customer_name for Room ID $room_id from $checkin_date to $checkout_date.";
+                // wp_mail($admin_email, 'New Booking Notification', $admin_message);
 
                 // Display success message
                 echo 'Booking successful!';
 
                 // Redirect to PayPal for payment (optional)
-                $this->display_paypal_button($room_id, $checkin_date, $checkout_date, $customer_name, $customer_email);
+                //$this->display_paypal_button($room_id, $checkin_date, $checkout_date, $customer_name, $customer_email);
             } else {
                 echo 'Sorry, this room is not available for the selected dates.';
             }
